@@ -10,3 +10,6 @@ npm run serve
 
 # Pour lancer les tests
 npm test
+
+# Pour lancer votre application avec PM2 et démarrer trois instances en parallèle, utilisez la commande suivante :
+pm2 start ecosystem.config.js
