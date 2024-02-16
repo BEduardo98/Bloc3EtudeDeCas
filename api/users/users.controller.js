@@ -35,6 +35,7 @@ class UsersController {
       next(err);
     }
   }
+
   async update(req, res, next) {
     try {
       const id = req.params.id;

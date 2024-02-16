@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const { isEmail } = require("validator");
 const bcrypt = require("bcrypt");
 
 const userSchema = Schema({
@@ -8,15 +7,12 @@ const userSchema = Schema({
     type: String,
     required: [true, "Password is required"],
     minlength: 8,
+    select: false,
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    /* validate: {
-      validator: isEmail,
-      message: (props) => `${props.value} is not correct`,
-    },*/
   },
   date: {
     type: Date,
@@ -24,7 +20,6 @@ const userSchema = Schema({
   },
   role: {
     type: String,
-    //enum: ["admin", "member"],
     enum: {
       values: ["admin", "member"],
       message: "{VALUE} inconnue",
@@ -33,20 +28,22 @@ const userSchema = Schema({
   age: Number,
 });
 
-/*userSchema.pre('save', function() {
-  if (!this.email) {
-    const error = new Error('mon message')
-    next(error)
+userSchema.pre("save", async function (next) {
+  try {
+    this.email = this.email.toLowerCase();
+    next();
+  } catch (err) {
+    next(err);
   }
-  next()
-}) */
-
-userSchema.pre("save", async function () {
-  this.email = this.email.toLowerCase();
 });
 
-userSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(this.password, 10);
+userSchema.pre("save", async function (next) {
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = model("User", userSchema);

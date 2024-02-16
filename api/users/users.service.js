@@ -19,7 +19,7 @@ class UserService {
     return User.deleteOne({ _id: id });
   }
   async checkPasswordUser(email, password) {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return false;
     }
